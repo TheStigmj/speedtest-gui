@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Speedtest home</h1>
+
+  <p>Welcome to <em>Speedtesting</em>, a tool for testing speeds.</p>
+
+{% if hostnames %}
+<h2>Speedtest-servers</h2>
+
+  <p>We have seen traffic from the following hosts:</p>
+  <ul>
+	{% for hostname in hostnames %}
+	<li><a href="http://{{ hostname.hostname }}/">{{ hostname.hostname }}</a></li>
+	{% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
