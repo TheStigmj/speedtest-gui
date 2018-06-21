@@ -20,7 +20,7 @@
 		<tbody>
 			{% for result in object_list %}<tr>
 				<td>{{ result.id }}</td>
-				<td>{{ result.created_date | date:"d.m.Y" }}</td>
+				<td>{{ result.created_date | date:"d.m.Y H:i:s" }}</td>
 				<td>{{ result.hostname }}</a></td>
 				<td>{{ result.ip }}</a></td>
 				<td>{{ result.ua }}</a></td>
