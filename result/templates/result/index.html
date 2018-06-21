@@ -8,7 +8,8 @@
 				<th>#</th>
 				<th>Date</th>
 				<th>Hostname</th>
-				<th>IP</th>
+				<th>Reporting IP</th>
+				<th>Client IP</th>
 				<th>UA</th>
 				<th>Lang</th>
 				<th>dl</th>
@@ -23,6 +24,7 @@
 				<td>{{ result.created_date | date:"d.m.Y H:i:s" }}</td>
 				<td>{{ result.hostname }}</a></td>
 				<td>{{ result.ip }}</a></td>
+				<td>{{ result.clientip }}</a></td>
 				<td>{{ result.ua }}</a></td>
 				<td>{{ result.lang }}</a></td>
 				<td>{{ result.dl }}</a></td>

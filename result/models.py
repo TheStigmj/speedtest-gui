@@ -11,6 +11,7 @@ class Result(models.Model):
 	created_date = models.DateTimeField(default=timezone.now, editable=False)
 	hostname = models.CharField(max_length=255)
 	ip = models.GenericIPAddressField()
+	clientip = models.GenericIPAddressField(blank=True, null=True)
 	ua = models.CharField(max_length=255)
 	lang = models.CharField(max_length=255)
 	dl = models.CharField(max_length=255, blank=True, null=True)
