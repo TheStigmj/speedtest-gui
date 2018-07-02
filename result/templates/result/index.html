@@ -20,8 +20,8 @@
 		</thead>
 		<tbody>
 			{% for result in object_list %}<tr>
-				<td>{{ result.id }}</td>
-				<td>{{ result.created_date | date:"d.m.Y H:i:s" }}</td>
+				<td><a href="{% url 'result:detail' result.id %}">{{ result.id }}</a></td>
+				<td><a href="{% url 'result:detail' result.id %}">{{ result.created_date | date:"d.m.Y H:i:s" }}</a></td>
 				<td>{{ result.hostname }}</a></td>
 				<td>{{ result.ip }}</a></td>
 				<td>{{ result.clientip }}</a></td>

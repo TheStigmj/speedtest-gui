@@ -1,31 +1,295 @@
 {% extends "base_generic.html" %}
+	{% block extrascripts %}
+    <style type="text/css">
+		#test{
+			margin-top:2em;
+			margin-bottom:12em;
+		}
 
+        #ip {
+            margin: 0.8em 0;
+            font-size: 1.2em;
+        }
+
+        #chart1Area,
+        #chart2Area {
+            width: 100%;
+            max-width: 30em;
+            height: 10em;
+            display: block;
+            margin: 0 auto;
+        }
+		div.testArea{
+			display:inline-block;
+			width:14em;
+			height:9em;
+			position:relative;
+			box-sizing:border-box;
+		}
+		div.testName{
+			position:absolute;
+			top:0.1em; left:0;
+			width:100%;
+			font-size:1.4em;
+			z-index:9;
+		}
+		div.meterText{
+			position:absolute;
+			bottom:1.5em; left:0;
+			width:100%;
+			font-size:2.5em;
+			z-index:9;
+		}
+		#dlText{
+			color:#4bc0c0;
+		}
+		#ulText{
+			color:#c0c04b;
+		}
+		#pingText{
+			color:#4bdc4b
+		}
+		#jitText{
+			color:#dc4b4b;
+		}
+		div.meterText:empty:before{
+			color:#505050 !important;
+			content:"0.00";
+		}
+		div.unit{
+			position:absolute;
+			bottom:2em; left:0;
+			width:100%;
+			z-index:9;
+		}
+		div.testGroup{
+			display:inline-block;
+		}
+	</style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+    <script type="text/javascript">
+		function I(id){return document.getElementById(id);}
+        var w = null
+		$( document ).ready(function(){
+			var chart1ctx = document.getElementById('chart1Area').getContext('2d')
+			var chart2ctx = document.getElementById('chart2Area').getContext('2d')
+			var dlDataset = {
+				label: 'Download',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,192,192,0.4)',
+				borderColor: 'rgba(75,192,192,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,192,192,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [0],
+				spanGaps: false
+			}
+			var ulDataset = {
+				label: 'Upload',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(192,192,75,0.4)',
+				borderColor: 'rgba(192,192,75,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(192,192,75,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(192,192,75,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [0],
+				spanGaps: false
+			}
+			var pingDataset = {
+				label: 'Ping',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(75,220,75,0.4)',
+				borderColor: 'rgba(75,220,75,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(75,220,75,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(75,220,75,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			}
+			var jitterDataset = {
+				label: 'Jitter',
+				fill: false,
+				lineTension: 0.1,
+				backgroundColor: 'rgba(220,75,75,0.4)',
+				borderColor: 'rgba(220,75,75,1)',
+				borderCapStyle: 'butt',
+				borderDash: [],
+				borderDashOffset: 0.0,
+				borderJoinStyle: 'miter',
+				pointBorderColor: 'rgba(220,75,75,1)',
+				pointBackgroundColor: '#fff',
+				pointBorderWidth: 1,
+				pointHoverRadius: 5,
+				pointHoverBackgroundColor: 'rgba(220,75,75,1)',
+				pointHoverBorderColor: 'rgba(220,220,220,1)',
+				pointHoverBorderWidth: 2,
+				pointRadius: 1,
+				pointHitRadius: 10,
+				data: [],
+				spanGaps: false
+			}
+
+			var chart1Options = {
+				type: 'line',
+				data: {
+					datasets: [dlDataset, ulDataset]
+				},
+				options: {
+					showLine: true,
+					responsive: true,
+					legend: {
+						position: 'bottom'
+					},
+					scales: {
+						xAxes: [{
+							display: true,
+							scaleLabel: {
+								display: false
+							},
+							ticks: {
+								beginAtZero: true
+							}
+						}],
+						yAxes: [{
+							display: true,
+							scaleLabel: 'Speed',
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			}
+			var chart2Options = {
+				type: 'line',
+				data: {
+					datasets: [pingDataset, jitterDataset]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						position: 'bottom'
+					},
+					scales: {
+						xAxes: [{
+							display: true,
+							scaleLabel: {
+								display: false
+							},
+							ticks: {
+								beginAtZero: true
+							}
+						}],
+						yAxes: [{
+							display: true,
+							scaleLabel: 'Latency',
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			}
+
+			var chart1 = new Chart(chart1ctx, chart1Options)
+			var chart2 = new Chart(chart2ctx, chart2Options)
+			var dldata = {{ dldata }}
+			var uldata = {{ uldata }}
+			var pingdata = {{ pingdata }}
+			var jitterdata = {{ jitterdata }}
+			
+			for (var i = 0; i < pingdata.length; i++) {
+				chart2.data.datasets[0].data.push(Number(pingdata[i]))
+				chart2.data.labels[chart2.data.datasets[0].data.length - 1] = ''
+				chart2.update()
+			}
+			for (var i = 0; i < jitterdata.length; i++) {
+				chart2.data.datasets[1].data.push(Number(jitterdata[i]))
+				chart2.data.labels[chart2.data.datasets[1].data.length - 1] = ''
+				chart2.update()
+			}
+			$.each(dldata, function( index, value ) {
+				chart1.data.datasets[0].data[Number(index)]=(Number(value))
+				chart1.data.labels[chart1.data.datasets[0].data.length - 1] = ''
+
+			});
+			$.each(uldata, function( index, value ) {
+				chart1.data.datasets[1].data[Number(index)]=(Number(value))
+				chart1.data.labels[chart1.data.datasets[1].data.length - 1] = ''
+
+			});
+			chart1.update()
+		});
+    </script>
+	{% endblock %}
 {% block content %}
-<h1>{{ advisory.advisory_id }}</h1>
-<h2>Title</h2>
-<p>{{ advisory.advisory_title }}</p>
-<h2>First published</h2>
-<p>{{ advisory.first_published }}</p>
-<h2>Last updated</h2>
-<p>{{ advisory.last_updated }}</p>
-{% if bug_ids %}
-	<h2>Bugs</h2>
-    <ul>
-    {% for bug_id in bug_ids %}
-		<li><a href="https://bst.cloudapps.cisco.com/bugsearch/bug/{{ bug_id }}">{{ bug_id }}</a></li>
-    {% endfor %}
-    </ul>
-{% endif %}
-{% if products %}
-	<h2>Products</h2>
-    <ul>
-    {% for product in products %}
-		<li><a href="/product/{{ product.id }}">{{ product.product_name }}</a></li>
-    {% endfor %}
-    </ul>
-{% endif %}
-<h2>Summary</h2>
-<p>{{ advisory.summary | safe }}</p>
+	
+    <h1>Speedtest detailed report</h1>
+	<p id="statusText" class="infoText">Testresults reported at {{ result.created_date | date:"d.m.Y H:i:s" }}</p>
+    <div id="testArea">
+        <p id="ip">Results from client IP {{ result.clientip }} to speedtest-server at {{ result.hostname }} (connected for reporting as {{ result.ip }})</p>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+		<div class="testGroup">
+			<h2>Speed</h2>
+			<canvas id="chart1Area"></canvas>
+			<div class="testArea">
+				<div class="testName">Download</div>
+				<div id="dlText" class="meterText">{{ result.dl }}</div>
+				<div class="unit">Mbps</div>
+			</div>
+			<div class="testArea">
+				<div class="testName">Upload</div>
+				<div id="ulText" class="meterText">{{ result.ul }}</div>
+				<div class="unit">Mbps</div>
+			</div>
+		</div>
+		<div class="testGroup">
+			<h2>Latency</h2>
+			<canvas id="chart2Area"></canvas>
+			<br/>
+			<div class="testArea">
+				<div class="testName">Ping</div>
+				<div id="pingText" class="meterText">{{ result.ping }}</div>
+				<div class="unit">ms</div>
+			</div>
+			<div class="testArea">
+				<div class="testName">Jitter</div>
+				<div id="jitText" class="meterText">{{ result.jitter }}</div>
+				<div class="unit">ms</div>
+			</div>
+		</div>
+    </div>
 {% endblock %}
