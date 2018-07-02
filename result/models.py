@@ -18,7 +18,7 @@ class Result(models.Model):
 	ul = models.CharField(max_length=255, blank=True, null=True)
 	ping = models.CharField(max_length=255, blank=True, null=True)
 	jitter = models.CharField(max_length=255, blank=True, null=True)
-	log = models.TextField(max_length=65535, blank=True, null=True)
+	log = models.TextField(blank=True, null=True)
 
 	def __str__(self):
 		return "%s %s" % (self.ip, self.hostname)
